@@ -6,8 +6,17 @@ Background_day = "Backgroundatdaytime.png"
 Background_night = "Cityatnight.png"
 
 
-background_image = pygame.image.load("Backgroundatdaytime.png").convert()
+# Changes the Time in game based on a loop and sleep commands 
+while num == 1:
+  background_image = pygame.image.load("Backgroundatdaytime.png").convert()
+  print("1")
+  pygame.display.update()
+  screen.blit(background_image, [0, 0])
+  time.sleep(150)
+  background_image = pygame.image.load("Cityatnight.png").convert()
+  pygame.display.update()
+  screen.blit(background_image, [0, 0])
+  time.sleep(150)
 
-screen.blit(background_image, [0, 0])
 
 pygame.display.flip()
