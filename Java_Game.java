@@ -1,33 +1,13 @@
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import pygame 
+import time
+num = 1
+screen = pygame.display.set_mode((500,500))
+Background_day = "Backgroundatdaytime.png"
+Background_night = "Cityatnight.png"
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
 
-class GUI {
-  public GUI(){
-    JLabel label = new JLabel("Score: 0");
-    JFrame frame = new JFrame();
-    JPanel panel = new JPanel();
-    panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
-    panel.setLayout(new GridLayout(0, 1));
-    panel.add(label);
+background_image = pygame.image.load("Backgroundatdaytime.png").convert()
 
-    frame.add(panel, BorderLayout.CENTER);
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setTitle("Game");
-    frame.pack();
-    frame.setVisible(true);
+screen.blit(background_image, [0, 0])
 
-    
-  }
-}
-  class Main {
-  public static void main(String[] args) {
-  new GUI();
-  }
-}
+pygame.display.flip()
