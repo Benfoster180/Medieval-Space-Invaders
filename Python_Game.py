@@ -6,8 +6,8 @@ import random
 clock = pygame.time.Clock()
 fps = 60
 
-screen_width = 600
-screen_height = 800
+screen_width = 500
+screen_height = 600
 
 screen = pygame.display.set_mode((screen_width,screen_height))
 pygame.display.set_caption('Game Name')
@@ -33,13 +33,13 @@ def draw_bg():
 
 #This is where we create the player
 class Player(pygame.sprite.Sprite):
-  def __init__(self,x,y, health):
+  def __init__(self,x,y,health):
     pygame.sprite.Sprite.__init__(self)
     self.image = pygame.image.load("Catapult.png")
     self.rect = self.image.get_rect()
     self.rect.center = [x,y]
     self.health_start = health 
-    self.health_remaining = health
+    self.health_remaining = self.health_start
     self.last_peew_peew = pygame.time.get_ticks()
 
   def update(self):
@@ -67,6 +67,8 @@ class Player(pygame.sprite.Sprite):
       Rock_group.add(ROCK)
       self.last_peew_peew = Current_time
 
+    self.mask = pygame.mask.from_surface(self.image)
+
   #Health bar
     pygame.draw.rect(screen, BLACK,(self.rect.x, (self.rect.bottom + 10), self.rect.width,15))
     if self.health_remaining > 0:
@@ -84,6 +86,8 @@ class Rock(pygame.sprite.Sprite):
   def update(self):
     self.rect.y -= 5
     if self.rect.bottom < 0:
+      self.kill()
+    if pygame.sprite.spritecollide(self, Ballon_group, True):
       self.kill()
 
 
@@ -140,6 +144,10 @@ class Lazer(pygame.sprite.Sprite):
     self.rect.y += 2
     if self.rect.top > screen_height:
       self.kill()
+    if pygame.sprite.spritecollide(self, Player_group, False, pygame.sprite.collide_mask):
+      self.kill()
+      #reducehealth
+      PLAYER.health_remaining -= 1
 
 
 run = True
