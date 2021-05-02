@@ -15,6 +15,9 @@ pygame.display.set_caption('Game Name')
 #Game reverb
 rows = 5
 cols = 5
+bal_cooldown = 1000 # 
+last_bal_shot = pygame.time.get_ticks()
+
 
 #colors 
 BLACK = (0,0,0)
@@ -23,7 +26,7 @@ RED = (255,0,0)
 
 
 #load image
-bg = pygame.image.load("Game_backdrop.png")
+bg = pygame.image.load("BGtesting.png")
 
 def draw_bg():
   screen.blit(bg, (0,0))
@@ -109,6 +112,7 @@ class Ballons(pygame.sprite.Sprite):
 Player_group = pygame.sprite.Group()
 Rock_group = pygame.sprite.Group()
 Ballon_group = pygame.sprite.Group()
+Ballon_attack_group = pygame.sprite.Group()
 
 def create_ballons():
   #gen ballom
@@ -123,6 +127,19 @@ create_ballons()
 PLAYER = Player(int(screen_width/2), screen_height - 100, 3)
 Player_group.add(PLAYER)
 
+#Ballon bullet
+
+class Lazer(pygame.sprite.Sprite):
+  def __init__(self,x,y):
+    pygame.sprite.Sprite.__init__(self)
+    self.image = pygame.image.load("Lazzer.png")
+    self.rect = self.image.get_rect()
+    self.rect.center = [x,y]
+  
+  def update(self):
+    self.rect.y += 2
+    if self.rect.top > screen_height:
+      self.kill()
 
 
 run = True
@@ -131,6 +148,19 @@ while run:
   #Game code in Here 
   draw_bg()
   clock.tick(fps)
+
+
+  #Random ballon attack
+
+  #current time
+  ballon_time_now = pygame.time.get_ticks()
+  #peew peew bal
+  if ballon_time_now - last_bal_shot > bal_cooldown and len(Ballon_attack_group) < 5 and len(Ballon_group) > 0:
+    attacking_bal = random.choice(Ballon_group.sprites())
+    LAZER = Lazer(attacking_bal.rect.centerx, attacking_bal.rect.bottom)
+    Ballon_attack_group.add(LAZER)
+    last_bal_shot = ballon_time_now
+
   #event handlers
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
@@ -143,10 +173,12 @@ while run:
   Player_group.draw(screen)
   Rock_group.draw(screen)
   Ballon_group.draw(screen)
+  Ballon_attack_group.draw(screen)
 
   #Group updates
   Rock_group.update()
   Ballon_group.update()
+  Ballon_attack_group.update()
 
   pygame.display.update()
 pygame.quit()
