@@ -57,6 +57,13 @@ class Player(pygame.sprite.Sprite):
     #Player movemtn right  
     if key[pygame.K_RIGHT] and self.rect.right < screen_width:
       self.rect.x += speed
+    
+    elif self.health_remaining <= 0:
+      exp_exp = Boom_Boom(self.rect.centerx, self.rect.centery,3)
+      Boom_Boom_group.add(exp_exp)
+      self.kill()
+
+      #Remov this for testing!!!
 
 
     #CURREnt time
@@ -79,7 +86,7 @@ class Player(pygame.sprite.Sprite):
 class Rock(pygame.sprite.Sprite):
   def __init__(self,x,y):
     pygame.sprite.Sprite.__init__(self)
-    self.image = pygame.image.load("Rock.png")
+    self.image = pygame.image.load("Lazzer.png")
     self.rect = self.image.get_rect()
     self.rect.center = [x,y]
   
@@ -89,6 +96,12 @@ class Rock(pygame.sprite.Sprite):
       self.kill()
     if pygame.sprite.spritecollide(self, Ballon_group, True):
       self.kill()
+      exp_exp = Boom_Boom(self.rect.centerx, self.rect.centery,2)
+      Boom_Boom_group.add(exp_exp)
+
+      
+
+
 
 
 #Ballons
@@ -117,6 +130,7 @@ Player_group = pygame.sprite.Group()
 Rock_group = pygame.sprite.Group()
 Ballon_group = pygame.sprite.Group()
 Ballon_attack_group = pygame.sprite.Group()
+Boom_Boom_group = pygame.sprite.Group()
 
 def create_ballons():
   #gen ballom
@@ -148,7 +162,44 @@ class Lazer(pygame.sprite.Sprite):
       self.kill()
       #reducehealth
       PLAYER.health_remaining -= 1
+      exp_exp = Boom_Boom(self.rect.centerx, self.rect.centery,1)
+      Boom_Boom_group.add(exp_exp)
+      self.kill()
 
+
+#Exposlion 
+class Boom_Boom(pygame.sprite.Sprite):
+  def __init__(self,x,y,size):
+    pygame.sprite.Sprite.__init__(self)
+    self.images = []
+    exp_num = 1
+    for num in range(1,6):
+      img = pygame.image.load(f"exp{num}.png")
+      print(img)
+      if size == 1:
+        pygame.transform.scale(img,(20,20))
+      if size == 2:
+        pygame.transform.scale(img,(40,40))
+      if size == 3:
+        pygame.transform.scale(img,(160,160))
+      self.images.append(img)
+    self.index = 0
+    self.image = self.images[self.index]
+    self.rect = self.image.get_rect()
+    self.rect.center = [x,y]
+    self.counter = 0
+
+  def update(self):
+    exp_speed = 3 
+    #updat Exception
+    self.counter += 1
+
+    if self.counter >= exp_speed and self.index < len(self.images) - 1:
+      self.counter = 0
+      self.index += 1
+      self.image = self.images[self.index]
+    if self.index >- len(self.images) - 1 and self.counter >= exp_speed:
+      self.kill()
 
 run = True
 
@@ -182,11 +233,13 @@ while run:
   Rock_group.draw(screen)
   Ballon_group.draw(screen)
   Ballon_attack_group.draw(screen)
+  Boom_Boom_group.draw(screen)
 
   #Group updates
   Rock_group.update()
   Ballon_group.update()
   Ballon_attack_group.update()
+  Boom_Boom_group.update()
 
   pygame.display.update()
 pygame.quit()
