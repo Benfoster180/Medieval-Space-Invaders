@@ -1,2 +1,2 @@
-# Game made in Java!
+# Game made in Python!
 
